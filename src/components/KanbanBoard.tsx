@@ -382,7 +382,7 @@ export const KanbanBoard: React.FC = () => {
     <div className="min-h-screen bg-background">
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       
-      <main className="container mx-auto px-6 py-6">
+      <main className="px-6 py-6">
         <DndContext
           sensors={sensors}
           onDragStart={handleDragStart}
