@@ -7,6 +7,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProjectSelector } from './ProjectSelector';
 import { ProjectModal } from './ProjectModal';
+import { InstallButton } from './InstallButton';
 import { Project } from '@/types/kanban';
 import { loadProjects, addProject, updateProject, deleteProject, createProject, getProject } from '@/lib/supabaseStorage';
 import { toast } from '@/hooks/use-toast';
@@ -179,6 +180,8 @@ export const Header: React.FC<HeaderProps> = ({ searchQuery, onSearchChange, cur
 
             {/* Right side: Project Selector and Actions */}
             <div className="flex items-center gap-4">
+              {/* Install Button */}
+              <InstallButton />
 
               {/* Project Selector (only show on project board) */}
               {isProjectBoard && (
