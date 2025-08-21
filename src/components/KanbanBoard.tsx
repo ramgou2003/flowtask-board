@@ -382,7 +382,7 @@ export const KanbanBoard: React.FC = () => {
     <div className="min-h-screen bg-background">
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-6 py-6">
         <DndContext
           sensors={sensors}
           onDragStart={handleDragStart}
@@ -407,7 +407,7 @@ export const KanbanBoard: React.FC = () => {
               <Button
                 variant="ghost"
                 onClick={handleAddColumn}
-                className="w-full h-32 border-2 border-dashed border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-colors animate-fade-in"
+                className="w-full h-[calc(100vh-12rem)] border-2 border-dashed border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-colors animate-fade-in"
               >
                 <div className="text-center">
                   <Plus className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />

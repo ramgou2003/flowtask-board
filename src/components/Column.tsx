@@ -53,7 +53,7 @@ export const Column: React.FC<ColumnProps> = ({
 
   return (
     <div className="w-80 flex-shrink-0 animate-slide-in">
-      <div className={`bg-card rounded-xl border border-border/50 h-full flex flex-col transition-all duration-200 
+      <div className={`bg-card rounded-xl border border-border/50 h-[calc(100vh-12rem)] flex flex-col transition-all duration-200 
         ${isOver ? 'drop-zone-active' : ''}
       `}>
         {/* Column Header */}
@@ -119,7 +119,7 @@ export const Column: React.FC<ColumnProps> = ({
         {/* Tasks List */}
         <div
           ref={setNodeRef}
-          className="flex-1 p-4 space-y-3 overflow-y-auto min-h-[200px]"
+          className="flex-1 p-4 space-y-3 overflow-y-auto"
         >
           <SortableContext items={column.tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
             {column.tasks.map((task) => (
