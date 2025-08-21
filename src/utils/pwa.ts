@@ -6,7 +6,7 @@ export const registerServiceWorker = async (): Promise<void> => {
         scope: '/',
       });
 
-      console.log('Service Worker registered successfully:', registration);
+      console.log('✅ Service Worker registered successfully:', registration);
 
       // Update available
       registration.addEventListener('updatefound', () => {
@@ -26,9 +26,14 @@ export const registerServiceWorker = async (): Promise<void> => {
         registration.update();
       }, 60000); // Check every minute
 
+      return registration;
+
     } catch (error) {
-      console.error('Service Worker registration failed:', error);
+      console.error('❌ Service Worker registration failed:', error);
+      throw error;
     }
+  } else {
+    console.warn('⚠️ Service Worker not supported');
   }
 };
 

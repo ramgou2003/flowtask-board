@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ProjectModal } from '@/components/ProjectModal';
+import { PWADebug } from '@/components/PWADebug';
 import { Header } from '@/components/Header';
 import { Project } from '@/types/kanban';
 import { loadProjects, addProject, updateProject, deleteProject, createProject } from '@/lib/supabaseStorage';
@@ -300,6 +301,13 @@ const ProjectDashboard: React.FC = () => {
           )}
         </div>
       </main>
+
+      {/* PWA Debug (temporary) */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-4 left-4 z-50 max-w-sm">
+          <PWADebug />
+        </div>
+      )}
 
       {/* Project Modal */}
       <ProjectModal
