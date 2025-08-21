@@ -119,21 +119,22 @@ export const Column: React.FC<ColumnProps> = ({
         {/* Tasks List */}
         <div
           ref={setNodeRef}
-          className="flex-1 p-4 space-y-3 overflow-y-auto"
+          className="flex-1 px-4 pt-4 space-y-3 overflow-y-auto"
         >
           <SortableContext items={column.tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
-            {column.tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onEdit={onEditTask}
-                onDelete={onDeleteTask}
-              />
+            {column.tasks.map((task, index) => (
+              <div key={task.id} className={index === column.tasks.length - 1 ? "pb-4" : ""}>
+                <TaskCard
+                  task={task}
+                  onEdit={onEditTask}
+                  onDelete={onDeleteTask}
+                />
+              </div>
             ))}
           </SortableContext>
 
           {column.tasks.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="flex flex-col items-center justify-center py-12 text-center px-4">
               <div className="w-12 h-12 rounded-full bg-muted/20 flex items-center justify-center mb-3">
                 <Plus className="h-6 w-6 text-muted-foreground" />
               </div>
