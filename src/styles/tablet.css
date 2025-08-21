@@ -1,0 +1,211 @@
+/* Tablet-specific optimizations */
+
+/* Touch-friendly interactions */
+@media (pointer: coarse) {
+  /* Larger touch targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Buttons */
+  button {
+    min-height: 44px;
+    padding: 12px 16px;
+  }
+  
+  /* Input fields */
+  input, textarea, select {
+    min-height: 44px;
+    padding: 12px 16px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  /* Cards and clickable areas */
+  .card {
+    padding: 16px;
+  }
+  
+  /* Drag handles */
+  .drag-handle {
+    padding: 8px;
+    margin: 4px;
+  }
+}
+
+/* Tablet landscape optimizations */
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  /* Header adjustments */
+  .header {
+    padding: 12px 24px;
+  }
+  
+  /* Kanban columns */
+  .kanban-board {
+    gap: 24px;
+    padding: 24px;
+  }
+  
+  .kanban-column {
+    min-width: 280px;
+    max-width: 320px;
+  }
+  
+  /* Project cards */
+  .project-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  
+  /* Modal dialogs */
+  .modal-content {
+    max-width: 600px;
+    margin: 40px auto;
+  }
+}
+
+/* Tablet portrait optimizations */
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  /* Kanban board adjustments */
+  .kanban-board {
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .kanban-column {
+    min-width: 240px;
+    max-width: 280px;
+  }
+  
+  /* Project grid */
+  .project-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  /* Header search */
+  .header-search {
+    width: 200px;
+  }
+}
+
+/* iPad specific optimizations */
+@media screen and (device-width: 768px) and (device-height: 1024px),
+       screen and (device-width: 1024px) and (device-height: 768px),
+       screen and (device-width: 834px) and (device-height: 1194px),
+       screen and (device-width: 1194px) and (device-height: 834px),
+       screen and (device-width: 1024px) and (device-height: 1366px),
+       screen and (device-width: 1366px) and (device-height: 1024px) {
+  
+  /* Safe area adjustments for newer iPads */
+  .app-container {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Optimize for Apple Pencil */
+  .task-card, .project-card {
+    touch-action: manipulation;
+  }
+  
+  /* Better scrolling */
+  .scrollable {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+}
+
+/* Android tablet optimizations */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  /* Material Design touch targets */
+  .md-touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+  
+  /* Ripple effects */
+  .ripple {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ripple::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+  }
+  
+  .ripple:active::before {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+/* PWA specific styles */
+@media (display-mode: standalone) {
+  /* Hide browser UI elements */
+  .browser-only {
+    display: none !important;
+  }
+  
+  /* Adjust for standalone mode */
+  .app-header {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  /* Full height in standalone */
+  .app-container {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height */
+  }
+}
+
+/* Hover states for devices that support it */
+@media (hover: hover) {
+  .hover-effect:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .card {
+    border: 2px solid;
+  }
+  
+  .button {
+    border: 2px solid;
+  }
+}
+
+/* Dark mode optimizations for tablets */
+@media (prefers-color-scheme: dark) {
+  /* Better contrast for OLED screens */
+  .dark-optimized {
+    background-color: #000000;
+  }
+  
+  /* Reduce blue light */
+  .warm-dark {
+    filter: sepia(10%) saturate(90%);
+  }
+}

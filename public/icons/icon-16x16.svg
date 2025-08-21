@@ -1,0 +1,20 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="16" height="16" rx="2" fill="#3b82f6"/>
+  <g transform="translate(3, 3)">
+    <rect x="0" y="0" width="2" height="8" rx="0.25" fill="white" fill-opacity="0.9"/>
+    <rect x="0.25" y="0.25" width="1.5" height="1" rx="0.125" fill="#3b82f6"/>
+    <rect x="0.25" y="1.4" width="1.5" height="0.8" rx="0.125" fill="#e5e7eb"/>
+    
+    <rect x="2.4" y="0" width="2" height="8" rx="0.25" fill="white" fill-opacity="0.9"/>
+    <rect x="2.65" y="0.25" width="1.5" height="0.8" rx="0.125" fill="#10b981"/>
+    <rect x="2.65" y="1.2" width="1.5" height="1" rx="0.125" fill="#e5e7eb"/>
+    
+    <rect x="4.8" y="0" width="2" height="8" rx="0.25" fill="white" fill-opacity="0.9"/>
+    <rect x="5.05" y="0.25" width="1.5" height="0.6" rx="0.125" fill="#f59e0b"/>
+    <rect x="5.05" y="1" width="1.5" height="0.8" rx="0.125" fill="#e5e7eb"/>
+    
+    <rect x="7.2" y="0" width="2" height="8" rx="0.25" fill="white" fill-opacity="0.9"/>
+    <rect x="7.45" y="0.25" width="1.5" height="0.8" rx="0.125" fill="#ef4444"/>
+  </g>
+  <text x="8" y="14" font-family="Arial, sans-serif" font-size="1.5" font-weight="bold" text-anchor="middle" fill="white">VIDEC</text>
+</svg>

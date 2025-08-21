@@ -5,6 +5,7 @@ export interface Task {
   priority: 'low' | 'medium' | 'high' | 'urgent';
   dueDate?: Date;
   tags: string[];
+  assignee?: string;
   columnId: string;
   order: number;
   createdAt: Date;
@@ -14,12 +15,26 @@ export interface Task {
 export interface Column {
   id: string;
   title: string;
-  order: number;
   tasks: Task[];
 }
 
 export interface KanbanBoard {
   columns: Column[];
+  lastUpdated: Date;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  description?: string;
+  color?: string;
+  board: KanbanBoard;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ProjectsData {
+  projects: Project[];
   lastUpdated: Date;
 }
 

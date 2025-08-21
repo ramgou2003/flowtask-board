@@ -51,19 +51,15 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete }) =>
       style={style}
       {...attributes}
       {...listeners}
-      className={`group relative bg-card rounded-xl border border-border/50 p-4 cursor-grab active:cursor-grabbing 
+      className={`group relative bg-card rounded-xl border border-border/50 p-4 cursor-grab active:cursor-grabbing
         hover:shadow-lg hover:shadow-primary/5 transition-all duration-200 animate-fade-in
         ${isDragging ? 'task-card-dragging' : 'hover:scale-[1.02]'}
+        touch-none select-none
       `}
       onClick={() => onEdit(task)}
     >
-      {/* Priority Indicator */}
-      <div className="absolute top-3 right-3 flex items-center gap-2">
-        <Badge variant="secondary" className={`text-xs px-2 py-1 ${priority.className}`}>
-          {priority.label}
-        </Badge>
-        
-        {/* Options Menu */}
+      {/* Options Menu */}
+      <div className="absolute bottom-2 right-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -75,13 +71,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete }) =>
               <MoreVertical className="h-3 w-3" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuContent align="start" className="w-40">
             <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(task); }}>
               <Edit className="h-4 w-4 mr-2" />
               Edit Task
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem 
+            <DropdownMenuItem
               onClick={(e) => { e.stopPropagation(); onDelete(task.id); }}
               className="text-destructive focus:text-destructive"
             >
@@ -93,10 +89,16 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete }) =>
       </div>
 
       {/* Task Content */}
-      <div className="pr-16 space-y-3">
-        <h3 className="font-medium text-card-foreground leading-tight line-clamp-2">
-          {task.title}
-        </h3>
+      <div className="pb-8 space-y-3">
+        {/* Title and Priority Badge in same row */}
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="font-medium text-card-foreground leading-tight line-clamp-2 flex-1">
+            {task.title}
+          </h3>
+          <Badge variant="secondary" className={`text-xs px-2 py-1 ${priority.className} flex-shrink-0`}>
+            {priority.label}
+          </Badge>
+        </div>
 
         {task.description && (
           <p className="text-sm text-muted-foreground line-clamp-2">

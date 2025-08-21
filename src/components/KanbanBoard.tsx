@@ -4,6 +4,8 @@ import {
   DndContext,
   DragOverlay,
   PointerSensor,
+  TouchSensor,
+  MouseSensor,
   useSensor,
   useSensors,
   DragStartEvent,
@@ -17,86 +19,34 @@ import { TaskModal } from './TaskModal';
 import { Header } from './Header';
 import { Button } from '@/components/ui/button';
 import { Task, Column as ColumnType, KanbanBoard as KanbanBoardType } from '@/types/kanban';
+import { getProject, getProjectWithTasks, updateProjectBoard, addTask, updateTask, deleteTask, createTask } from '@/lib/supabaseStorage';
 import { toast } from '@/hooks/use-toast';
 
-const STORAGE_KEY = 'kanban-board-data';
+interface KanbanBoardProps {
+  projectId: string;
+}
 
-const initialData: KanbanBoardType = {
-  columns: [
-    {
-      id: 'col-1',
-      title: 'To Do',
-      order: 0,
-      tasks: [
-        {
-          id: 'task-1',
-          title: 'Design new landing page',
-          description: 'Create a modern, responsive landing page with glassmorphism effects',
-          priority: 'high',
-          tags: ['Design', 'UI/UX'],
-          columnId: 'col-1',
-          order: 0,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-        },
-      ],
-    },
-    {
-      id: 'col-2',
-      title: 'In Progress',
-      order: 1,
-      tasks: [
-        {
-          id: 'task-2',
-          title: 'Implement user authentication',
-          description: 'Set up login, registration, and password reset functionality',
-          priority: 'urgent',
-          tags: ['Development', 'Backend'],
-          columnId: 'col-2',
-          order: 0,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-    },
-    {
-      id: 'col-3',
-      title: 'Review',
-      order: 2,
-      tasks: [],
-    },
-    {
-      id: 'col-4',
-      title: 'Done',
-      order: 3,
-      tasks: [
-        {
-          id: 'task-3',
-          title: 'Set up project structure',
-          description: 'Initialize React project with TypeScript and Tailwind CSS',
-          priority: 'medium',
-          tags: ['Setup', 'Development'],
-          columnId: 'col-4',
-          order: 0,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-    },
-  ],
-  lastUpdated: new Date(),
-};
-
-export const KanbanBoard: React.FC = () => {
-  const [data, setData] = useState<KanbanBoardType>(initialData);
+export const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
+  const [data, setData] = useState<KanbanBoardType | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [newTaskColumnId, setNewTaskColumnId] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
 
   const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 100,
+        tolerance: 15,
+      },
+    }),
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 8,
@@ -104,40 +54,57 @@ export const KanbanBoard: React.FC = () => {
     })
   );
 
-  // Load data from localStorage
+  // Load project data
   useEffect(() => {
-    const savedData = localStorage.getItem(STORAGE_KEY);
-    if (savedData) {
+    const loadProject = async () => {
       try {
-        const parsed = JSON.parse(savedData);
-        // Convert date strings back to Date objects
-        parsed.columns.forEach((col: ColumnType) => {
-          col.tasks.forEach((task: Task) => {
-            task.createdAt = new Date(task.createdAt);
-            task.updatedAt = new Date(task.updatedAt);
-            if (task.dueDate) task.dueDate = new Date(task.dueDate);
+        setIsLoading(true);
+        const project = await getProjectWithTasks(projectId);
+        if (project) {
+          setData(project.board);
+        } else {
+          toast({
+            title: 'Error',
+            description: 'Project not found.',
+            variant: 'destructive',
           });
-        });
-        setData(parsed);
+        }
       } catch (error) {
-        console.error('Failed to load kanban data:', error);
+        console.error('KanbanBoard error loading project:', error);
         toast({
           title: 'Error',
-          description: 'Failed to load saved data. Using default layout.',
+          description: 'Failed to load project.',
           variant: 'destructive',
         });
+      } finally {
+        setIsLoading(false);
       }
-    }
-  }, []);
+    };
 
-  // Save data to localStorage
+    loadProject();
+  }, [projectId]);
+
+  // Save data to project storage
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [data]);
+    const saveBoard = async () => {
+      if (data) {
+        await updateProjectBoard(projectId, data);
+      }
+    };
+    saveBoard();
+  }, [data, projectId]);
+
+  // Cleanup: Re-enable scrolling if component unmounts during drag
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, []);
 
   // Filter tasks based on search query
   const filteredColumns = useMemo(() => {
-    if (!searchQuery) return data.columns;
+    if (!data || !searchQuery) return data?.columns || [];
 
     return data.columns.map(column => ({
       ...column,
@@ -147,15 +114,18 @@ export const KanbanBoard: React.FC = () => {
         task.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
       ),
     }));
-  }, [data.columns, searchQuery]);
+  }, [data?.columns, searchQuery]);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
+    // Disable scrolling when dragging starts
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
   };
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
-    if (!over) return;
+    if (!over || !data) return;
 
     const activeId = active.id as string;
     const overId = over.id as string;
@@ -169,6 +139,7 @@ export const KanbanBoard: React.FC = () => {
     // Move task between columns
     if (activeTask.columnId !== overColumn.id) {
       setData(prev => {
+        if (!prev) return prev;
         const newColumns = prev.columns.map(col => {
           if (col.id === activeTask.columnId) {
             return {
@@ -195,7 +166,11 @@ export const KanbanBoard: React.FC = () => {
     const { active, over } = event;
     setActiveId(null);
 
-    if (!over) return;
+    // Re-enable scrolling when dragging ends
+    document.body.style.overflow = '';
+    document.body.style.touchAction = '';
+
+    if (!over || !data) return;
 
     const activeId = active.id as string;
     const overId = over.id as string;
@@ -208,14 +183,15 @@ export const KanbanBoard: React.FC = () => {
     // Reorder tasks within the same column
     if (overTask && activeTask.columnId === overTask.columnId) {
       setData(prev => {
+        if (!prev) return prev;
         const columnIndex = prev.columns.findIndex(col => col.id === activeTask.columnId);
         const column = prev.columns[columnIndex];
-        
+
         const oldIndex = column.tasks.findIndex(task => task.id === activeId);
         const newIndex = column.tasks.findIndex(task => task.id === overId);
 
         const newTasks = arrayMove(column.tasks, oldIndex, newIndex);
-        
+
         const newColumns = [...prev.columns];
         newColumns[columnIndex] = { ...column, tasks: newTasks };
 
@@ -230,6 +206,7 @@ export const KanbanBoard: React.FC = () => {
   };
 
   const findTask = (id: string): Task | null => {
+    if (!data) return null;
     for (const column of data.columns) {
       const task = column.tasks.find(task => task.id === id);
       if (task) return task;
@@ -238,10 +215,12 @@ export const KanbanBoard: React.FC = () => {
   };
 
   const findColumn = (id: string): ColumnType | null => {
+    if (!data) return null;
     return data.columns.find(col => col.id === id) || null;
   };
 
   const findColumnByTask = (taskId: string): ColumnType | null => {
+    if (!data) return null;
     for (const column of data.columns) {
       if (column.tasks.find(task => task.id === taskId)) {
         return column;
@@ -262,69 +241,81 @@ export const KanbanBoard: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleSaveTask = (task: Task) => {
-    setData(prev => {
-      const newColumns = prev.columns.map(col => {
-        if (selectedTask) {
-          // Editing existing task
-          if (col.id === task.columnId) {
-            return {
-              ...col,
-              tasks: col.tasks.map(t => t.id === task.id ? task : t),
-            };
+  const handleSaveTask = async (task: Task) => {
+    if (!data) return;
+
+    try {
+      if (selectedTask && selectedTask.id !== 'new') {
+        // Editing existing task
+        const updatedTask = await updateTask(selectedTask.id, task);
+        if (updatedTask) {
+          // Reload the project to get updated data
+          const updatedProject = await getProject(projectId);
+          if (updatedProject) {
+            setData(updatedProject.board);
           }
-          // Remove from old column if moved
-          if (col.id === selectedTask.columnId && selectedTask.columnId !== task.columnId) {
-            return {
-              ...col,
-              tasks: col.tasks.filter(t => t.id !== task.id),
-            };
-          }
-        } else {
-          // Adding new task
-          if (col.id === newTaskColumnId) {
-            const newTask = {
-              ...task,
-              columnId: newTaskColumnId,
-              order: col.tasks.length,
-            };
-            return {
-              ...col,
-              tasks: [...col.tasks, newTask],
-            };
-          }
+          toast({
+            title: 'Task updated',
+            description: 'Task has been updated successfully.',
+          });
         }
-        return col;
+      } else {
+        // Adding new task
+        const newTask = await addTask(projectId, newTaskColumnId, task);
+        if (newTask) {
+          // Reload the project to get updated data
+          const updatedProject = await getProject(projectId);
+          if (updatedProject) {
+            setData(updatedProject.board);
+          }
+          toast({
+            title: 'Task created',
+            description: 'Task has been created successfully.',
+          });
+        }
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to save task. Please try again.',
+        variant: 'destructive',
       });
+    }
 
-      return { ...prev, columns: newColumns, lastUpdated: new Date() };
-    });
-
-    toast({
-      title: selectedTask ? 'Task updated' : 'Task created',
-      description: `"${task.title}" has been ${selectedTask ? 'updated' : 'created'} successfully.`,
-    });
+    setIsModalOpen(false);
+    setSelectedTask(null);
+    setNewTaskColumnId('');
   };
 
-  const handleDeleteTask = (taskId: string) => {
+  const handleDeleteTask = async (taskId: string) => {
     const task = findTask(taskId);
-    if (!task) return;
+    if (!task || !data) return;
 
-    setData(prev => {
-      const newColumns = prev.columns.map(col => ({
-        ...col,
-        tasks: col.tasks.filter(t => t.id !== taskId),
-      }));
-      return { ...prev, columns: newColumns };
-    });
-
-    toast({
-      title: 'Task deleted',
-      description: `"${task.title}" has been deleted successfully.`,
-    });
+    try {
+      const success = await deleteTask(taskId);
+      if (success) {
+        // Reload the project to get updated data
+        const updatedProject = await getProject(projectId);
+        if (updatedProject) {
+          setData(updatedProject.board);
+        }
+        toast({
+          title: 'Task deleted',
+          description: `"${task.title}" has been deleted successfully.`,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete task. Please try again.',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleAddColumn = () => {
+    if (!data) return;
+
     const newColumn: ColumnType = {
       id: `col-${Date.now()}`,
       title: 'New Column',
@@ -332,10 +323,13 @@ export const KanbanBoard: React.FC = () => {
       tasks: [],
     };
 
-    setData(prev => ({
-      ...prev,
-      columns: [...prev.columns, newColumn],
-    }));
+    setData(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        columns: [...prev.columns, newColumn],
+      };
+    });
 
     toast({
       title: 'Column added',
@@ -344,7 +338,10 @@ export const KanbanBoard: React.FC = () => {
   };
 
   const handleEditColumn = (columnId: string, title: string) => {
+    if (!data) return;
+
     setData(prev => {
+      if (!prev) return prev;
       const newColumns = prev.columns.map(col =>
         col.id === columnId ? { ...col, title } : col
       );
@@ -354,7 +351,7 @@ export const KanbanBoard: React.FC = () => {
 
   const handleDeleteColumn = (columnId: string) => {
     const column = findColumn(columnId);
-    if (!column) return;
+    if (!column || !data) return;
 
     if (column.tasks.length > 0) {
       toast({
@@ -365,10 +362,13 @@ export const KanbanBoard: React.FC = () => {
       return;
     }
 
-    setData(prev => ({
-      ...prev,
-      columns: prev.columns.filter(col => col.id !== columnId),
-    }));
+    setData(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        columns: prev.columns.filter(col => col.id !== columnId),
+      };
+    });
 
     toast({
       title: 'Column deleted',
@@ -378,18 +378,30 @@ export const KanbanBoard: React.FC = () => {
 
   const activeTask = activeId ? findTask(activeId) : null;
 
+  if (isLoading || !data) {
+    return (
+      <div className="h-screen bg-background flex flex-col items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Loading project...</h2>
+          <p className="text-muted-foreground">Please wait while we load your project data.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-background">
-      <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      
-      <main className="px-6 pt-6">
+    <div className="h-screen bg-background flex flex-col">
+      <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} currentProjectId={projectId} />
+
+      <main className="px-6 pt-3 flex-1 overflow-hidden">
         <DndContext
           sensors={sensors}
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <div className="flex gap-6 overflow-x-auto pb-6">
+          <div className="flex gap-6 overflow-x-auto h-full pb-4">
             {filteredColumns.map((column) => (
               <Column
                 key={column.id}
@@ -407,7 +419,7 @@ export const KanbanBoard: React.FC = () => {
               <Button
                 variant="ghost"
                 onClick={handleAddColumn}
-                className="w-full h-[calc(100vh-12rem)] border-2 border-dashed border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-colors animate-fade-in"
+                className="w-full h-full border-2 border-dashed border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-colors animate-fade-in"
               >
                 <div className="text-center">
                   <Plus className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />

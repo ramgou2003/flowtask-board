@@ -1,0 +1,20 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="180" height="180" rx="22.5" fill="#3b82f6"/>
+  <g transform="translate(33.75, 33.75)">
+    <rect x="0" y="0" width="22.5" height="90" rx="2.8125" fill="white" fill-opacity="0.9"/>
+    <rect x="2.8125" y="2.8125" width="16.875" height="11.25" rx="1.40625" fill="#3b82f6"/>
+    <rect x="2.8125" y="15.749999999999998" width="16.875" height="9" rx="1.40625" fill="#e5e7eb"/>
+    
+    <rect x="27" y="0" width="22.5" height="90" rx="2.8125" fill="white" fill-opacity="0.9"/>
+    <rect x="29.8125" y="2.8125" width="16.875" height="9" rx="1.40625" fill="#10b981"/>
+    <rect x="29.8125" y="13.5" width="16.875" height="11.25" rx="1.40625" fill="#e5e7eb"/>
+    
+    <rect x="54" y="0" width="22.5" height="90" rx="2.8125" fill="white" fill-opacity="0.9"/>
+    <rect x="56.8125" y="2.8125" width="16.875" height="6.75" rx="1.40625" fill="#f59e0b"/>
+    <rect x="56.8125" y="11.25" width="16.875" height="9" rx="1.40625" fill="#e5e7eb"/>
+    
+    <rect x="81" y="0" width="22.5" height="90" rx="2.8125" fill="white" fill-opacity="0.9"/>
+    <rect x="83.8125" y="2.8125" width="16.875" height="9" rx="1.40625" fill="#ef4444"/>
+  </g>
+  <text x="90" y="157.5" font-family="Arial, sans-serif" font-size="16.875" font-weight="bold" text-anchor="middle" fill="white">VIDEC</text>
+</svg>

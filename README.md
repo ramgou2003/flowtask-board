@@ -1,40 +1,73 @@
-# Welcome to your Lovable project
+# 📋 VIDEC Task Board
 
-## Project info
+A beautiful, modern task management and project organization app built with React, TypeScript, and Supabase. Features a stunning glassmorphism design, PWA support, and tablet optimization.
 
-**URL**: https://lovable.dev/projects/c83b369e-abf9-4a12-bbdd-e5945376423d
+![VIDEC Task Board](https://img.shields.io/badge/PWA-Ready-brightgreen) ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue) ![Responsive](https://img.shields.io/badge/Responsive-Tablet%20Optimized-orange)
 
-## How can I edit this code?
+## ✨ Features
 
-There are several ways of editing your application.
+### 🎯 **Core Functionality**
+- **Multi-Project Management** - Organize tasks across multiple projects
+- **Kanban Board** - Drag & drop task management with customizable columns
+- **Real-time Sync** - Changes sync instantly across devices
+- **User Authentication** - Secure login with Supabase Auth
+- **Data Isolation** - Each user only sees their own projects and tasks
 
-**Use Lovable**
+### 📱 **PWA & Mobile**
+- **Progressive Web App** - Install on any device
+- **Offline Support** - Works without internet connection
+- **Tablet Optimized** - Perfect for iPad and Android tablets
+- **Touch-Friendly** - Large touch targets and smooth interactions
+- **App-like Experience** - Runs in standalone mode
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c83b369e-abf9-4a12-bbdd-e5945376423d) and start prompting.
+### 🎨 **Design & UX**
+- **Glassmorphism UI** - Modern, beautiful design
+- **Dark/Light Theme** - Automatic theme switching
+- **Responsive Layout** - Works on all screen sizes
+- **Smooth Animations** - Polished user experience
+- **Accessibility** - Screen reader friendly
 
-Changes made via Lovable will be committed automatically to this repo.
+### 🔧 **Technical Features**
+- **TypeScript** - Type-safe development
+- **Real-time Database** - Powered by Supabase
+- **Service Worker** - Background sync and caching
+- **Security** - Row Level Security (RLS) policies
+- **Performance** - Optimized loading and caching
 
-**Use your preferred IDE**
+## 🚀 Quick Start
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Supabase account
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installation
 
-Follow these steps:
+1. **Clone the repository:**
+   ```bash
+   git clone <YOUR_GIT_URL>
+   cd videc-task-board
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3. **Set up environment variables:**
+   ```bash
+   cp .env.example .env.local
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+   Edit `.env.local` with your Supabase credentials
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+4. **Start development server:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser:**
+   Navigate to `http://localhost:5173`
 
 **Edit a file directly in GitHub**
 

@@ -6,6 +6,7 @@ import { Column as ColumnType, Task } from '@/types/kanban';
 import { TaskCard } from './TaskCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,7 +54,7 @@ export const Column: React.FC<ColumnProps> = ({
 
   return (
     <div className="w-80 flex-shrink-0 animate-slide-in">
-      <div className={`bg-card rounded-xl border border-border/50 h-[calc(100vh-12rem)] flex flex-col transition-all duration-200 
+      <div className={`bg-card rounded-xl border border-border/50 h-full flex flex-col transition-all duration-200
         ${isOver ? 'drop-zone-active' : ''}
       `}>
         {/* Column Header */}
@@ -82,48 +83,50 @@ export const Column: React.FC<ColumnProps> = ({
               </div>
             )}
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                  <Edit2 className="h-4 w-4 mr-2" />
-                  Rename
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  onClick={() => onDeleteColumn(column.id)}
-                  className="text-destructive focus:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+            <div className="flex items-center gap-1">
+              {/* Add Task Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onAddTask(column.id)}
+                className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-primary/10"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
 
-          {/* Add Task Button */}
-          <Button
-            variant="ghost"
-            onClick={() => onAddTask(column.id)}
-            className="w-full mt-3 justify-start text-muted-foreground hover:text-foreground border border-dashed border-border/50 hover:border-primary/30 hover:bg-primary/5"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add task
-          </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-40">
+                  <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                    <Edit2 className="h-4 w-4 mr-2" />
+                    Rename
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => onDeleteColumn(column.id)}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
         </div>
 
         {/* Tasks List */}
         <div
           ref={setNodeRef}
-          className="flex-1 px-4 pt-4 space-y-3 overflow-y-auto"
+          className="flex-1 px-4 pt-2 space-y-3 overflow-y-auto"
         >
           <SortableContext items={column.tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
             {column.tasks.map((task, index) => (
-              <div key={task.id} className={index === column.tasks.length - 1 ? "pb-4" : ""}>
+              <div key={task.id} className={index === column.tasks.length - 1 ? "pb-2" : ""}>
                 <TaskCard
                   task={task}
                   onEdit={onEditTask}
@@ -140,7 +143,7 @@ export const Column: React.FC<ColumnProps> = ({
               </div>
               <p className="text-sm text-muted-foreground">No tasks yet</p>
               <p className="text-xs text-muted-foreground/60 mt-1">
-                Click "Add task" to get started
+                Click the + icon to add a task
               </p>
             </div>
           )}
@@ -149,6 +152,3 @@ export const Column: React.FC<ColumnProps> = ({
     </div>
   );
 };
-
-// Import Badge component
-import { Badge } from '@/components/ui/badge';

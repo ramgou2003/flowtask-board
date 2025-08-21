@@ -2,27 +2,55 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FlowTask Board - Beautiful Kanban Task Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>VIDEC Task Board - Beautiful Kanban Task Management</title>
     <meta name="description" content="A modern, beautiful Kanban board for personal task management with drag & drop, priorities, and glassmorphism design." />
-    <meta name="author" content="FlowTask" />
-    <meta name="keywords" content="kanban, task management, productivity, drag and drop, modern ui" />
+    <meta name="author" content="VIDEC" />
+    <meta name="keywords" content="kanban, task management, productivity, drag and drop, modern ui, pwa, tablet" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="VIDEC Task Board" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="VIDEC Tasks" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+    <meta name="msapplication-TileColor" content="#3b82f6" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="theme-color" content="#3b82f6" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" sizes="32x32" href="/icons/icon-32x32.svg" />
+    <link rel="icon" type="image/svg+xml" sizes="16x16" href="/icons/icon-16x16.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-180x180.svg" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180x180.svg" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-167x167.svg" />
+
+    <!-- Splash Screens for iOS -->
+    <link rel="apple-touch-startup-image" href="/icons/icon-512x512.svg" />
+
+    <!-- Tablet optimizations -->
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="MobileOptimized" content="320" />
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="FlowTask Board - Beautiful Kanban Task Management" />
+    <meta property="og:title" content="VIDEC Task Board - Beautiful Kanban Task Management" />
     <meta property="og:description" content="A modern, beautiful Kanban board for personal task management with drag & drop, priorities, and glassmorphism design." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta property="og:image" content="/icons/icon-512x512.svg" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@flowtask" />
-    <meta name="twitter:title" content="FlowTask Board - Beautiful Kanban Task Management" />
+    <meta name="twitter:site" content="@videc" />
+    <meta name="twitter:title" content="VIDEC Task Board - Beautiful Kanban Task Management" />
     <meta name="twitter:description" content="A modern, beautiful Kanban board for personal task management with drag & drop, priorities, and glassmorphism design." />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://flowtask-board.lovable.app" />
+    <meta name="twitter:image" content="/icons/icon-512x512.svg" />
   </head>
 
   <body>
